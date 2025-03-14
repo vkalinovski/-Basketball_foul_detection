@@ -1,6 +1,3 @@
-# =======================
-# Блок 1: Загрузка исходных данных
-# =======================
 from google.colab import drive
 import os
 from pathlib import Path
