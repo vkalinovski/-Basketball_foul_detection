@@ -1,16 +1,15 @@
-# =======================
-# Блок 3: Разбиение на train и val
-# =======================
+# Устанавливаем seed для воспроизводимости и перемешиваем пары
 random.seed(42)
-random.shuffle(all_pairs)
-n_total = len(all_pairs)
+random.shuffle(pairs)
+
+n_total = len(pairs)
 n_train = int(n_total * 0.8)
-train_pairs = all_pairs[:n_train]
-val_pairs = all_pairs[n_train:]
+train_pairs = pairs[:n_train]
+val_pairs = pairs[n_train:]
 
 print(f"Train пар: {len(train_pairs)}, Validation пар: {len(val_pairs)}")
 
-# Извлекаем списки путей
+# Извлекаем списки путей для каждой выборки
 train_images = [img for img, lbl in train_pairs]
 train_labels = [lbl for img, lbl in train_pairs]
 val_images = [img for img, lbl in val_pairs]
