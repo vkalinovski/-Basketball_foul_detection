@@ -1,0 +1,25 @@
+# !pip install pytubefix -q
+# !pip install yt_dlp ffmpeg-python torch whisper requests nest_asyncio -q
+# !pip install yt-dlp ffmpeg-python pydub requests nest_asyncio -q
+
+# Библиотеки
+import os
+import sys
+import json
+import math
+import time
+import re
+import ffmpeg
+import requests
+import yt_dlp
+from pydub import AudioSegment
+from IPython.display import clear_output
+import nest_asyncio
+from pathlib import Path
+from typing import List, Dict
+
+nest_asyncio.apply()
+
+# Монтирование Google Drive
+from google.colab import drive
+drive.mount('/content/drive', force_remount=True)
