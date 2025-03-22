@@ -29,7 +29,7 @@
 ## Основной Пайплайн
 
 1. **Скачивание видео**:
-   - Используем `yt_dlp` с поддержкой cookies (если видео требует авторизации YouTube).
+   - Используем `yt_dlp` с поддержкой cookies (для авторизации YouTube).
    - Файл cookies (формата Netscape) загружается в Colab и указывается в `COOKIES_PATH`.
 
 2. **Извлечение аудио**:
@@ -50,13 +50,6 @@
    - С помощью `ffmpeg` сохраняются кадры (по умолчанию `18` кадров/сек) из `[start_time, end_time]`.
    - Итого получаем набор `frame_0001.jpg, frame_0002.jpg, ...` в папке `foul_i/frames/`.
 
-## Файлы и Структура
-
-- **`main_code.ipynb`** / **`.py`** — основной код, который вы видите здесь.
-- **`cookies.txt`** — файл cookies (экспортируйте через расширение Chrome/Firefox), загрузите в `Google Drive`.
-- **Результаты**:
-
-
 ## Зависимости
 
 - [Python 3.9+](https://www.python.org/downloads/)
@@ -67,7 +60,7 @@
 - [nest_asyncio](https://github.com/erdewit/nest_asyncio)
 - [DeepInfra API](https://deepinfra.com)
 
-Установка (в Colab уже прописано в ячейках):
+Установка:
 ```bash
 !pip install pytubefix -q
 !pip install yt_dlp ffmpeg-python torch whisper requests nest_asyncio -q
