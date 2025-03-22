@@ -21,10 +21,10 @@
 3. **Анализировать** расшифровку с помощью LLM DeepInfra для **поиска моментов фолов** (фрагментов с ключевыми фразами).
 4. **Вырезать кадры** из каждого найденного интервала, **сохраняя их в отдельные папки** на Google Drive.
 
-Идеально для задач:
-- Спортивной аналитики,
-- Детального разбора видео (поиск спорных моментов, ситуаций с фолами),
-- Подготовки датасетов из отдельных кадров.
+Важно:
+- Обновлять `cookies.txt`
+- Заменить `DRIVE_PATH`
+- Адаптировать `FRAME_RATE` и `MAX_AUDIO_SIZE_MB`
 
 ## Основной Пайплайн
 
@@ -60,8 +60,8 @@
 - [nest_asyncio](https://github.com/erdewit/nest_asyncio)
 - [DeepInfra API](https://deepinfra.com)
 
-Установка:
-```bash
+## Установка:
+```
 !pip install pytubefix -q
 !pip install yt_dlp ffmpeg-python torch whisper requests nest_asyncio -q
 !pip install yt-dlp ffmpeg-python pydub requests nest_asyncio -q
