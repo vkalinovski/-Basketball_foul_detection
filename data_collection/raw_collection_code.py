@@ -308,5 +308,4 @@ def process_video(url: str):
         sys.exit(1)
 # -------------------------------------------------------------------------
 if __name__ == "__main__":
-    # URL нашего видео
     process_video(VIDEO_URL)
