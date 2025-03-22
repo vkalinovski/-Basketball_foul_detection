@@ -1,4 +1,4 @@
-# -Basketball_foul_detection
+# Basketball_foul_detection
 ---
 
 <h3 align="center">This project is currently under development🙂</h3>
