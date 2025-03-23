@@ -40,7 +40,7 @@ COOKIES_PATH = "/content/drive/MyDrive/ds_one/cookies.txt"
 VIDEO_URL = "https://youtu.be/ufOiMggc6pw?si=Hj0LN_Rwknk29OOw"
 # -------------------------------------------------------------------------
 class Config:
-    DRIVE_PATH = "/content/drive/MyDrive/ds_one"    # Папка на Google Drive для результатов
+    DRIVE_PATH = "/content/drive/MyDrive/ds_one/hardest_foul_moments"    
     TEMP_DIR = "/content/temp"                      # Временная папка
     FRAME_RATE = 18                                 # Сколько кадров/сек при сохранении
     MAX_AUDIO_SIZE_MB = 5                           # Размер одного чанка (уменьшаем для долгих видео)
