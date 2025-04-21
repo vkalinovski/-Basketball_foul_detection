@@ -20,10 +20,10 @@ This project focuses on detecting fouls in basketball games and validating the d
 - Used for collecting videos from YouTube, defining foul moment intervals, spliting them into frames and uploading to our cloud storage
 
 ### 📁 Labeling
-- Using LabelStudio...
+- Using **Label Studio** with **Video Object Tracking** to manually annotate short video clips, labeling each segment explicitly as `foul` or `no_foul` for precise ground truth creation.
 
 ### 📁 Dataset Creation
--
+- Exported annotated labels as JSON files from Label Studio, structured them systematically, and uploaded the final labeled dataset to [**Kaggle**](https://www.kaggle.com/datasets/sesmlhs/foul-detection-test/data?select=M16.mp4), facilitating efficient training of our model.
 
 ### 📁 Model Training
 -
