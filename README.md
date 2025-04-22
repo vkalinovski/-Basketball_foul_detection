@@ -1,6 +1,3 @@
-# Basketball_foul_detection
----
-
 <h3 align="center">This project is currently under development🙂</h3>
 
 <div align="center">
@@ -47,5 +44,5 @@ This repo automates the full pipeline:
 - Separated newly added videos via a `seen_videos.txt` file to avoid data leakage.
 - Improved model generalization with **gradient clipping** and selective layer freezing.
 
-### 📁 
+### 📁 ...
 -
