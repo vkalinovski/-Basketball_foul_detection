@@ -26,9 +26,18 @@ This project focuses on detecting fouls in basketball games and validating the d
 - Exported annotated labels as JSON files from Label Studio, structured them systematically, and uploaded the final labeled dataset to [**Kaggle**](https://www.kaggle.com/datasets/sesmlhs/foul-detection-test/data?select=M16.mp4), facilitating efficient training of our model.
 
 ### 📁 Model Training
--
+- Fine-tuned a **SlowFast R50 model** from PyTorchVideo using **PyTorch Lightning** with full AMP support.
+- Applied advanced video augmentations: temporal subsampling, crop, flip, jitter, and Gaussian noise.
+- Integrated **Mixup augmentation**, **label smoothing**, and **OneCycleLR** scheduling.
+- Used **Google Colab GPU**, stored checkpoints and logs in **Google Drive**.
+- Metrics and training logs visualized via **TensorBoard**.
 
 ### 📁 Model Tuning
--
+- Tuned hyperparameters including learning rate and dropout using **Optuna**.
+- Leveraged **early stopping** and **checkpointing** based on validation accuracy.
+- Separated newly added videos via a `seen_videos.txt` file to avoid data leakage.
+- Improved model generalization with **gradient clipping** and selective layer freezing.
+
+### 📁 
 
 
