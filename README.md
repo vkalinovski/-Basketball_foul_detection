@@ -17,7 +17,7 @@ This project focuses on detecting fouls in basketball games and validating the d
 ## 📂 Repository Structure
 
 ### 📁 **[Data collection](https://github.com/vkalinovski/-Basketball_foul_detection/tree/main/data_collection)**
-- Used for collecting videos from YouTube, defining foul moment intervals, spliting them into frames and uploading to our cloud storage
+- Used for collecting videos from YouTube, defining foul moment intervals, spliting them into video intervals and uploading to our cloud storage
 
 ### 📁 Labeling
 - Using **Label Studio** with **Video Object Tracking** to manually annotate short video clips, labeling each segment explicitly as `foul` or `no_foul` for precise ground truth creation.
