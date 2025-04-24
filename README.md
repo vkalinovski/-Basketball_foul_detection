@@ -20,7 +20,7 @@ This repo automates the full pipeline:
 ---
 
 
-## 📂 Repository Structure
+## 📂 Project Structure
 
 ### 📁 **[Data collection](https://github.com/vkalinovski/-Basketball_foul_detection/tree/main/data_collection)**
 - Used for collecting videos from YouTube, defining foul moment intervals, spliting them into video intervals and uploading to our cloud storage
