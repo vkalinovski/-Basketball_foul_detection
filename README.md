@@ -25,10 +25,10 @@ This repo automates the full pipeline:
 ### 📁 **[Data collection](https://github.com/vkalinovski/-Basketball_foul_detection/tree/main/data_collection)**
 - Used for collecting videos from YouTube, defining foul moment intervals, spliting them into video intervals and uploading to our cloud storage
 
-### 📁 Labeling
+### 📁 **[Labeling](https://labelstud.io/)**
 - Using **Label Studio** with **Video Object Tracking** to manually annotate short video clips, labeling each segment explicitly as `foul` or `no_foul` for precise ground truth creation.
 
-### 📁 Dataset Upload
+### 📁 **[Dataset Upload](https://www.kaggle.com/datasets/sesmlhs/foul-detection-test/data?select=M16.mp4)**
 - Exported annotated labels as JSON files from Label Studio, structured them systematically, and uploaded the final labeled dataset to [**Kaggle**](https://www.kaggle.com/datasets/sesmlhs/foul-detection-test/data?select=M16.mp4), facilitating efficient training of our model.
 
 ### 📁 Model Training
