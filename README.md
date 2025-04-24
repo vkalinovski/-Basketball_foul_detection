@@ -28,7 +28,7 @@ This repo automates the full pipeline:
 ### 📁 Labeling
 - Using **Label Studio** with **Video Object Tracking** to manually annotate short video clips, labeling each segment explicitly as `foul` or `no_foul` for precise ground truth creation.
 
-### 📁 Dataset Creation
+### 📁 Dataset Upload
 - Exported annotated labels as JSON files from Label Studio, structured them systematically, and uploaded the final labeled dataset to [**Kaggle**](https://www.kaggle.com/datasets/sesmlhs/foul-detection-test/data?select=M16.mp4), facilitating efficient training of our model.
 
 ### 📁 Model Training
