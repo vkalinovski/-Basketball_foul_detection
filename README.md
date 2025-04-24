@@ -44,5 +44,8 @@ This repo automates the full pipeline:
 - Separated newly added videos via a `seen_videos.txt` file to avoid data leakage.
 - Improved model generalization with **gradient clipping** and selective layer freezing.
 
+### 📁 Model Validation
+- ...
+
 ### 📁 ...
--
+
