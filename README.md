@@ -5,7 +5,7 @@
 </div>
 
 <!-- ────────────────────────────────────────────────────────────────────────── -->
-# 🏀 Basketball Foul Detection  |  SlowFast ⚡ Video Classifier
+# 🏀 Basketball Foul Detection  |  ResNet ⚡ Video Classifier
 Detecting fouls in NBA games, one clip at a time — from **YouTube scraping** to **model deployment**.
 
 ---
