@@ -61,9 +61,3 @@
 - [pydub](https://github.com/jiaaro/pydub)
 - [nest_asyncio](https://github.com/erdewit/nest_asyncio)
 - [DeepInfra API](https://deepinfra.com)
-
-## Установка:
-```
-!pip install pytubefix -q
-!pip install yt_dlp ffmpeg-python torch whisper requests nest_asyncio -q
-!pip install yt-dlp ffmpeg-python pydub requests nest_asyncio -q
