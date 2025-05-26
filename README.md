@@ -118,7 +118,7 @@
 
 | Модель | Ноутбук | mAP@0.5 | Причина отказа |
 |--------|---------|--------|----------------|
-| Faster R-CNN | [`Faster R-CNN/r_cnn.ipynb`](./Faster%20R-CNN/r_cnn.ipynb) | 0.42 | медленно, переобучается |
+| Faster R-CNN | [`Faster R-CNN/r_cnn.ipynb`](./Faster%20R-CNN/r_cnn.ipynb) | 0.1 | медленно, переобучается |
 | YOLOv12 | [`YOLOv12/train-yolo12.ipynb`](./YOLOv12/train-yolo12.ipynb) | 0.48 | хуже детектирует контакты |
 
 ---
