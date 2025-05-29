@@ -18,7 +18,6 @@
 4. [📁 Model Training](#-model-training)
 5. [📁 Model Tuning](#-model-tuning)
 6. [📁 Model Validation](#-model-validation)
-7. [Запуск](#-запуск)
 
 
 ---
