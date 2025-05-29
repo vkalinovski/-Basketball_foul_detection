@@ -1,6 +1,6 @@
 ---
 <div align="center">
-  <img src="images/image.png" alt="Pipeline Overview" width="700" />
+  <img src="images/image.png" alt="Pipeline Overview" width="600" />
 </div>
 
 # 🏀 Basketball-Foul-Detection
