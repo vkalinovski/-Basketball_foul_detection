@@ -1,10 +1,9 @@
-# 🏀 Basketball-Foul-Detection
-
 ---
-
 <div align="center">
   <img src="images/image.png" alt="Pipeline Overview" width="700" />
 </div>
+
+# 🏀 Basketball-Foul-Detection
 
 ---
 
