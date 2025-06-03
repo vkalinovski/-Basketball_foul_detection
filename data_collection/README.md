@@ -15,44 +15,50 @@
 
 ## Overview
 
-Данный проект позволяет:
-1. **Скачать видео** с YouTube (через `yt_dlp` и cookies).
-2. **Извлечь аудио** из видео и транскрибировать его с помощью API [DeepInfra Whisper](https://deepinfra.com).
-3. **Анализировать** расшифровку с помощью LLM DeepInfra для **поиска моментов фолов** (фрагментов с ключевыми фразами).
-4. **Вырезать кадры** из каждого найденного интервала, **сохраняя их в отдельные папки** на Google Drive.
-5. Также сохранить сам видео-интервал.
+This project allows you to:
+1. **Download videos** from YouTube (using `yt_dlp` with cookies).
+2. **Extract audio** from the video and transcribe it via the [DeepInfra Whisper API](https://deepinfra.com).
+3. **Analyze** the transcription with DeepInfra’s LLM to **identify foul moments** (segments containing key phrases).
+4. **Extract frames** from each detected interval, **saving them into separate folders** on Google Drive.
+5. Also save the video clip corresponding to each detected interval.
 
-Важно:
-- Обновлять `cookies.txt`
-- Заменить `DRIVE_PATH`
-- Адаптировать `FRAME_RATE` и `MAX_AUDIO_SIZE_MB`
+Important:
+- Keep `cookies.txt` updated.
+- Replace `DRIVE_PATH` with your Google Drive path.
+- Adjust `FRAME_RATE` and `MAX_AUDIO_SIZE_MB` as needed.
 
-## Основной Пайплайн
+## Main Pipeline
 
-1. **Скачивание видео**:
-   - Используем `yt_dlp` с поддержкой cookies (для авторизации YouTube).
-   - Файл cookies (формата Netscape) загружается в Colab и указывается в `COOKIES_PATH`.
+1. **Video Download**:
+   - Use `yt_dlp` with cookie support (for YouTube authentication).
+   - Upload `cookies.txt` (Netscape format) to Colab and set `COOKIES_PATH`.
 
-2. **Извлечение аудио**:
-   - Применяем `ffmpeg` для конвертации видео → `*.wav`.
+2. **Audio Extraction**:
+   - Use `ffmpeg` to convert the video to `*.wav`.
 
-3. **Транскрибация**:
-   - WAV → MP3 (битрейт и частота дискретизации настраиваются).
-   - Разбиваем на чанки (по умолчанию `5` МБ), чтобы избежать таймаутов.
-   - Каждый чанк отправляем в DeepInfra Whisper API. После успешной транскрибации — удаляем временный файл.
+3. **Transcription**:
+   - Convert WAV → MP3 (custom bitrate and sample rate).
+   - Split into chunks (default `5` MB) to avoid timeouts.
+   - Send each chunk to the DeepInfra Whisper API. After successful transcription, delete the temporary file.
 
-4. **Анализ текста (LLM)**:
-   - Готовый транскрибированный текст отправляется в DeepInfra LLM (Meta-Llama).
-   - LLM возвращает **JSON-массив**: `[{ "start_time": <float>, "end_time": <float>, "text": <string> }, ...]`.
-   - Время — предполагаемая секунда начала/конца фола.
+4. **Text Analysis (LLM)**:
+   - Send the complete transcription to DeepInfra’s LLM (Meta-Llama).
+   - The LLM returns a **JSON array**:  
+     ```
+     [
+       { "start_time": <float>, "end_time": <float>, "text": <string> },
+       ...
+     ]
+     ```
+   - Times represent the estimated start and end seconds of each foul.
 
-5. **Извлечение кадров**:
-   - Для каждого фола создаётся папка `foul_i`.
-   - С помощью `ffmpeg` сохраняются кадры (по умолчанию `18` кадров/сек) из `[start_time, end_time]`.
-   - Итого получаем набор `frame_0001.jpg, frame_0002.jpg, ...` в папке `foul_i/frames/`.
-   - Также получаем видео-интервал в формате .mp4
+5. **Frame Extraction**:
+   - For each foul, create a folder `foul_i`.
+   - Use `ffmpeg` to save frames (default `18` frames/sec) from `[start_time, end_time]`.
+   - You’ll get files like `frame_0001.jpg, frame_0002.jpg, ...` in `foul_i/frames/`.
+   - Also save the corresponding video segment as a `.mp4` file.
 
-## Зависимости
+## Dependencies
 
 - [Python 3.9+](https://www.python.org/downloads/)
 - [Requests](https://requests.readthedocs.io/)
