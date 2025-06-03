@@ -11,87 +11,82 @@
 ---
 
 ## 📖 Overview
-Этот репозиторий содержит ноутбук, который обучает **однокадровый** детектор баскетбольных фолов.  
-В основе — **Faster R-CNN** с **ResNet-50 + Feature Pyramid Network**, предобученный на COCO и дообученный на размеченных кадрах из Label Studio.
+This repository contains a notebook that trains a **single-frame** basketball-foul detector.  
+Based on **Faster R-CNN** with **ResNet-50 + Feature Pyramid Network**, pretrained on COCO and fine-tuned on Label Studio–annotated frames.
 
 ---
 
-## 🎯 TL;DR – текущие результаты  
-| Метрика (val) | Значение * |
-|---------------|-----------|
-| **mAP @ 0.50** | **0.0105** |
-| AR @ 10        | 0.0749 |
+## 🎯 TL;DR – Current Results  
+| Metric (val)   | Value *   |
+|----------------|-----------|
+| **mAP @ 0.50** | **0.0105**|
+| AR @ 10        | 0.0749    |
 
-\* получено после 30 эпох на GPU A100 40 GB.
-
+\* Results after 30 epochs on an A100 40 GB GPU.
 
 ---
 ## 📁 Labeling & Dataset Upload
-- **Label Studio** ([labelstud.io](https://labelstud.io/)) с плагином **Video Object Tracking** использовался для ручной аннотации коротких видеоклипов: каждый сегмент помечался как `foul` или `no_foul` для точного формирования ground-truth.
-- После завершения разметки экспортировали JSON-файлы, структурировали их по видео и кадрам, а затем загрузили итоговый датасет на **Kaggle** ([Foul Detection (test)](https://www.kaggle.com/datasets/sesmlhs/foul-detection-test/data?select=M16.mp4)), что позволило удобно подгружать данные и масштабировать обучение.  
-
+- **Label Studio** ([labelstud.io](https://labelstud.io/)) with the **Video Object Tracking** plugin was used for manually annotating short clips: each segment was labeled as `foul` or `no_foul` to form precise ground truth.  
+- After labeling, JSON files were exported, organized by video and frame, and the final dataset was uploaded to **Kaggle** ([Foul Detection (test)](https://www.kaggle.com/datasets/sesmlhs/foul-detection-test/data?select=M16.mp4)), enabling easy data loading and scalable training.
 
 ---
 
 ## 📦 Dataset
 
-| Источник                          | Размер | Ссылка                                                                                                                     |
-| --------------------------------- | -----: | -------------------------------------------------------------------------------------------------------------------------- |
-| Kaggle: **Foul Detection (test)** | 1.3 GB | [https://www.kaggle.com/datasets/sesmlhs/foul-detection-test](https://www.kaggle.com/datasets/sesmlhs/foul-detection-test) |
+| Source                           | Size  | Link                                                                                                                   |
+|----------------------------------|------:|------------------------------------------------------------------------------------------------------------------------|
+| Kaggle: **Foul Detection (test)**| 1.3 GB| [https://www.kaggle.com/datasets/sesmlhs/foul-detection-test](https://www.kaggle.com/datasets/sesmlhs/foul-detection-test) |
 
 ---
 
-## ⚙️ Ноутбук по блокам
+## ⚙️ Notebook Breakdown
 
-| Блок      | Ключевая логика                                                                                                                    | Why / Особенности                         |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| **BLK-1** | Установка, монтирование Drive, `kaggle datasets download`                                                                          | Чек-пойнты хранятся на Drive              |
-| **BLK-2** | Чтение JSON → `{frame : bbox}`                                                                                                     | Обрабатывает пропуски и пустые bbox       |
-| **BLK-3** | Stratified split 80/20, incremental-training лог                                                                                   | `seen_videos.txt` — не переобучать старое |
-| **BLK-4** | `FrameDataset`: берём **центральный кадр**, resize 512, нормализация, аугментации (ColorJitter, flip, blur, rotate) + safe-wrapper | Центральный кадр ≈ вероятный момент фола  |
-| **BLK-5** | Создание Faster R-CNN ResNet-50-FPN, замена head→2 класса                                                                          | «фон» / «foul»                            |
-| **BLK-6** | EMA-update, метрики, LR-планировщики                                                                                               | —                                         |
-| **BLK-7** | Обучение: **AdamW + OneCycle → CosineWarmRestarts → SWA** (+ EMA, AMP). Чек-пойнт при mAP↑, сохранение SWA                         | Устойчивый DataLoader (`num_workers=0`)   |
-| **BLK-8** | Сквозная валидация: mAP @\[0.50‒0.95], @0.50, @0.75, AR @ 1/10/100                                                                 | Табличный вывод                           |
+| Block     | Core Logic                                                                                             | Why / Notes                                 |
+|-----------|--------------------------------------------------------------------------------------------------------|---------------------------------------------|
+| **BLK-1** | Install dependencies, mount Drive, `kaggle datasets download`                                          | Checkpoints stored on Drive                 |
+| **BLK-2** | Read JSON → `{frame : bbox}`                                                                           | Handles missing entries and empty bboxes    |
+| **BLK-3** | Stratified 80/20 split, incremental-training logic                                                     | `seen_videos.txt` — prevent reusing old data|
+| **BLK-4** | `FrameDataset`: take the **center frame**, resize to 512, normalize, augment (ColorJitter, flip, blur, rotate) + safe wrapper | Center frame ≈ likely foul moment  |
+| **BLK-5** | Create Faster R-CNN ResNet-50-FPN, replace head → 2 classes                                            | “background” / “foul”                       |
+| **BLK-6** | EMA update, metrics, learning-rate schedulers                                                          | —                                           |
+| **BLK-7** | Training: **AdamW + OneCycle → CosineWarmRestarts → SWA** (+ EMA, AMP). Checkpoint on mAP↑, save SWA    | Stable DataLoader (`num_workers=0`)         |
+| **BLK-8** | End-to-end validation: mAP @[0.50–0.95], @0.50, @0.75, AR @ 1/10/100                                 | Tabular output                              |
 
 ---
-## 🧠 Почему такая модель?
+## 🧠 Why This Model?
 
-| Компонент                 | Причина выбора                                         |
-| ------------------------- | ------------------------------------------------------ |
-| **Faster R-CNN**          | Надёжный баланс точность/скорость; легко fine-tune     |
-| **ResNet-50**             | Достаточная глубина при умеренных FLOPs                |
-| **FPN**                   | Держит мульти-скейл: фол может быть крупным или мелким |
-| **AdamW + OneCycle**      | Быстрый прогрев и плавный спад LR                      |
-| **SWA + EMA**             | Усреднение снижает шум последних шагов – + mAP         |
-| **AMP**                   | \~×1.5 скорость, −40 % VRAM                            |
-| **WeightedRandomSampler** | Компенсирует класс-дисбаланс («фон» >> «foul»)         |
-
-
+| Component                  | Reason                              |
+|----------------------------|-------------------------------------|
+| **Faster R-CNN**           | Reliable accuracy/speed balance; easy to fine-tune |
+| **ResNet-50**              | Sufficient depth with moderate FLOPs |
+| **FPN**                    | Handles multi-scale: fouls can be large or small |
+| **AdamW + OneCycle**       | Fast warmup and smooth LR decay    |
+| **SWA + EMA**              | Averaging reduces noise in later steps → +mAP |
+| **AMP**                    | ~×1.5 speedup, –40 % VRAM usage     |
+| **WeightedRandomSampler**  | Compensates for class imbalance (“background” >> “foul”) |
 
 ---
 
 ## 🛠️ Hyper-Parameters
 
-| Параметр            |        Значение | Описание                |
-| ------------------- | --------------: | ----------------------- |
-| `EPOCHS`            |              30 | Полное обучение         |
-| `PHASE1` / `PHASE2` |         10 / 20 | OneCycle → Cosine       |
-| `swa_start`         |              25 | Старт SWA               |
-| `batch_size`        |               4 | Для 12 GB VRAM          |
-| `IMG_SIZE`          | 512 → 384 → 512 | Прогрессивное изменение |
-| `lr`                |           1 e-3 | Базовый LR              |
-| `weight_decay`      |           1 e-4 | Регуляризация           |
-| `EMA_DECAY`         |          0.9999 | «Инерция» EMA           |
-| `num_workers`       |         0 (→ 2) | Стабильность → скорость |
-
+| Parameter            |   Value | Description                |
+|----------------------|--------:|----------------------------|
+| `EPOCHS`             |      30 | Full training run          |
+| `PHASE1` / `PHASE2`  |     10 / 20 | OneCycle → Cosine       |
+| `swa_start`          |      25 | SWA start epoch            |
+| `batch_size`         |       4 | For 12 GB VRAM             |
+| `IMG_SIZE`           | 512 → 384 → 512 | Progressive resizing |
+| `lr`                 | 1 e−3   | Base learning rate         |
+| `weight_decay`       | 1 e−4   | Regularization             |
+| `EMA_DECAY`          | 0.9999  | EMA inertia                |
+| `num_workers`        |   0 → 2 | Stability → speed          |
 
 ---
-## 🗂️ Артефакты
+## 🗂️ Artifacts
 
-| Файл                                  | Содержимое                                       |
-| ------------------------------------- | ------------------------------------------------ |
-| `checkpoints/best_detector.pth`       | Веса с наилучшим mAP\@0.50 (сохр. каждые 5 эпох) |
-| `checkpoints/swa_final.pth`           | Итоговая SWA-усреднённая модель                  |
-| `train_videos.txt` / `val_videos.txt` | Списки роликов для воспроизводимости             |
-| `seen_videos.txt`                     | Видео, уже использованные в прошлых запусках     |
+| File                              | Contents                                        |
+|-----------------------------------|-------------------------------------------------|
+| `checkpoints/best_detector.pth`   | Weights with best mAP@0.50 (saved every 5 epochs) |
+| `checkpoints/swa_final.pth`       | Final SWA-averaged model                         |
+| `train_videos.txt` / `val_videos.txt` | Lists of videos for reproducibility         |
+| `seen_videos.txt`                 | Videos already used in previous runs             |
