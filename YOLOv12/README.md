@@ -1,4 +1,4 @@
-# 🦆 YOLOv12n — Высокоскоростной Детектор Объектов Видео
+# 🦆 YOLOv12n — High-Speed Video Object Detector
 
 ![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-red.svg)
@@ -12,63 +12,62 @@
 
 ## 📖 Overview
 
-Этот репозиторий содержит **YOLOv12n** — ультра-лёгкий однокадровый детектор, оптимизированный для реального времени на видео. В основе — **Ultralytics YOLOv12** с предобученными весами, дообученными на вашем датасете.
+This repository contains **YOLOv12n**, an ultra-light single-frame detector optimized for real-time video. It is based on **Ultralytics YOLOv12** with pretrained weights, further fine-tuned on your custom dataset.
 
 ---
 
-## 🎯 TL;DR — Результаты (Validation Set)
+## 🎯 TL;DR — Results (Validation Set)
 
-| Метрика        | Значение   |
-|----------------|-----------:|
-| **mAP @50**    | `0.XX`     |
-| **mAP @50-95** | `0.XX`     |
-| **FPS (640²)** | ~`YY` fps  |
+| Metric        | Value     |
+|---------------|----------:|
+| **mAP @50**   | `0.XX`    |
+| **mAP @50-95**| `0.XX`    |
+| **FPS (640²)**| ~`YY` fps |
 
-<sub>*Значения получены при `epochs=150`, `batch=16`, `imgsz=640`, GPU NVIDIA RTX 3090.*</sub>
+<sub>*Values obtained with `epochs=150`, `batch=16`, `imgsz=640` on an NVIDIA RTX 3090 GPU.*</sub>
 
 ---
 
 ## 📂 Project Structure
 
 ```text
-├── train-yolo12.ipynb            # Jupyter-ноутбук для обучения YOLOv12n
+├── train-yolo12.ipynb            # Jupyter notebook for training YOLOv12n
 ├── data/
-│   ├── data.yaml                 # Конфиг датасета (Ultralytics формат)
+│   ├── data.yaml                 # Dataset config (Ultralytics format)
 │   ├── train/
-│   │   ├── images/               # Изображения для обучения
-│   │   └── labels/               # Разметка YOLO (*.txt)
+│   │   ├── images/               # Training images
+│   │   └── labels/               # YOLO-formatted labels (*.txt)
 │   ├── val/
-│   │   ├── images/               # Изображения для валидации
-│   │   └── labels/               # Разметка YOLO (*.txt)
+│   │   ├── images/               # Validation images
+│   │   └── labels/               # YOLO-formatted labels (*.txt)
 │   └── test/
-│       └── images/               # Изображения для тестового инференса
+│       └── images/               # Images for test inference
 ├── weights/
-│   └── yolov12n.pt               # Предобученные или ваши веса
+│   └── yolov12n.pt               # Pretrained or custom weights
 ├── runs/
 │   └── detect/
-│       ├── train/                # Логи обучения: веса, метрики, графики
-│       └── val/                  # Результаты валидации: метрики, примеры
-├── requirements.txt              # Зависимости проекта
-└── README.md                     # Этот файл
+│       ├── train/                # Training logs: weights, metrics, plots
+│       └── val/                  # Validation results: metrics, examples
+├── requirements.txt              # Project dependencies
+└── README.md                     # This file
 ```
 
 ## ⚙️ Training — `train-yolo12.ipynb`
 
-### Установка зависимостей
+### Installing Dependencies
 
 ```bash
 pip install -U ultralytics
 pip install -r requirements.txt
 ```
 
-### Подготовка данных
+### Preparing the Data
 
-Отредактируйте `data/data.yaml`, указав пути к папкам:
-- `train/` — изображения и разметка для обучения  
-- `val/` — изображения и разметка для валидации  
-- `test/` — изображения для тестового инференса  
+- `train/` — images and labels for training  
+- `val/` — images and labels for validation  
+- `test/` — images for test inference
 
-### Инициализация модели
+### Initializing the Model
 
 ```python
 from ultralytics import YOLO
@@ -76,7 +75,7 @@ from ultralytics import YOLO
 model = YOLO('weights/yolov12n.pt')
 ```
 
-### Запуск обучения
+### Running Training
 
 ```python
 model.train(
@@ -90,14 +89,14 @@ model.train(
 )
 ```
 
-### Валидация и метрики
+### Validation and Metrics
 
 ```python
 metrics = model.val(data='data/data.yaml')
 print(f"mAP50-95: {metrics.box.map:.3f}, mAP50: {metrics.box.map50:.3f}")
 ```
 
-### Инференс на изображениях
+### Inference on Images
 
 ```python
 results = model.predict(
