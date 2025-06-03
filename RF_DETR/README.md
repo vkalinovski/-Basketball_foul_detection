@@ -17,25 +17,25 @@ The RF-DETR model weights (~122 MB) are available as a GitHub Release asset. You
 ---
 
 ## 📖 Overview  
-**RF-DETR** (*Radar Frequency Detection Transformer*) — гибрид CNN + Transformer-архитектура, способная:
-- **Точно локализовать объекты** на последовательности видеокадров  
-- **Сохранять трекинг** даже при шуме, смазе и низком разрешении  
-- **Интегрировать радиочастотные признаки** (range / Doppler) для усиления «зрения»  
+**RF-DETR** (*Radar Frequency Detection Transformer*) is a hybrid CNN + Transformer architecture capable of:
+- **Precisely localizing objects** across video frame sequences  
+- **Maintaining tracking** even under noise, motion blur, and low resolution  
+- **Integrating radar-frequency features** (range / Doppler) to augment visual perception  
 
-Вся логика реализована на **PyTorch 2.1** с **Detectron2 0.6**; модель легко расширяется собственными модулями признаков.
+All logic is implemented in **PyTorch 2.1** with **Detectron2 0.6**; the model can be easily extended with custom feature modules.
 
 ---
 
 ## 🎯 TL;DR — Current Results  
 
-| Метрика (val)      | ResNet-50 | ResNet-101 |
-|--------------------|----------:|-----------:|
-| **mAP @ 0.50**     | **0.427** | **0.451** |
-| mAP @ \[0.50‒0.95] | 0.273     | 0.288     |
-| AR @ 100           | 0.381     | 0.396     |
-| FPS (1080p, RTX 3090) | 29 fps | 24 fps |
+| Metric (val)     | ResNet-50 | ResNet-101 |
+|------------------|----------:|-----------:|
+| **mAP @ 0.50**   | **0.427** | **0.451**  |
+| mAP @ [0.50‒0.95]| 0.273     | 0.288      |
+| AR @ 100         | 0.381     | 0.396      |
+| FPS (1080p, RTX 3090) | 29 fps | 24 fps   |
 
-<sub>Тренировка — 45 эпох, 2×A100 80 GB, batch_size = 8, загрузка радара 20 каналов.</sub>
+<sub>Training — 45 epochs, 2×A100 80 GB, batch_size = 8, radar input: 20 channels.</sub>
 
 ---
 
@@ -60,56 +60,55 @@ The RF-DETR model weights (~122 MB) are available as a GitHub Release asset. You
 
 ## 📦 Dataset  
 
-| Source | Clips | Frames | Size | Link |
-|--------|------:|-------:|-----:|------|
-| **RF-Tracking Benchmark v1** | 92 | 136 842 | 5.6 GB | _private S3_ |
-| **YouTube (creative commons)** | 51 | 78 014 | 3.4 GB | — |
-| **Total** | **143** | **214 856** | **9.0 GB** | |
+| Source                          | Clips | Frames   | Size | Link         |
+|---------------------------------|------:|---------:|-----:|--------------|
+| **RF-Tracking Benchmark v1**    | 92    | 136,842  | 5.6 GB | _private S3_ |
+| **YouTube (Creative Commons)**  | 51    | 78,014   | 3.4 GB | —            |
+| **Total**                       | **143** | **214,856** | **9.0 GB** |  |
 
 ### Labeling  
-- **Label Studio** с плагином **Video Object Tracking** → экспорт COCO JSON  
-- RF-данные синхронизируются по *timestamp* и пишутся во второй канал HDF5 (`rf_range`, `rf_doppler`)  
+- **Label Studio** with the **Video Object Tracking** plugin → export COCO JSON  
+- Radar data is synchronized by *timestamp* and stored as a second channel in HDF5 (`rf_range`, `rf_doppler`)  
 
 ---
 
 ## ⚙️ Notebook Breakdown  
 
-| Block | Логика | Особенности |
-|-------|--------|-------------|
-| **B-1** | Mount Drive, env check, ⚙️ `pip install -r requirements.txt` | Colab-friendly |
-| **B-2** | Parsing RF + video, кадро-батч селектор | 3-уровневый кэш (RAM → NVMe → S3) |
-| **B-3** | `RFCOCODataset` + augmenter (Albumentations) | RF-каналы аугментируются синхронно |
-| **B-4** | Build RF-DETR (backbone, FPN, transformer heads) | Plug-and-play RF-heads |
-| **B-5** | Train loop: AdamW → Cosine Annealing, AMP, EMA | Checkpoint @ mAP↑ |
-| **B-6** | Eval: mAP/mAR, confusion matrix, speed test | Табличный + графический вывод |
-| **B-7** | Export weights, TorchScript, ONNX | `outputs/checkpoints/` |
+| Block | Logic                                           | Notes                                             |
+|-------|-------------------------------------------------|---------------------------------------------------|
+| **B-1** | Mount Drive, check environment, ⚙️ `pip install -r requirements.txt` | Colab-friendly                                    |
+| **B-2** | Parse RF + video, frame-batch selector        | 3-level cache (RAM → NVMe → S3)                    |
+| **B-3** | `RFCOCODataset` + augmenter (Albumentations)  | RF channels are augmented synchronously            |
+| **B-4** | Build RF-DETR (backbone, FPN, transformer heads) | Plug-and-play RF heads                            |
+| **B-5** | Training loop: AdamW → Cosine Annealing, AMP, EMA | Checkpoint on mAP improvements                    |
+| **B-6** | Evaluation: mAP/mAR, confusion matrix, speed test | Tabular + graphical output                        |
+| **B-7** | Export weights, TorchScript, ONNX              | Outputs saved in `outputs/checkpoints/`            |
 
 ---
 
 ## 🧠 Why This Model?  
 
-| Компонент | Почему |
-|-----------|--------|
-| **DETR-style Transformer** | Учится глобальным отношениям ↔ устойчив к окклюзиям |
-| **Radar‐fusion head** | RF-каналы ≈ «сквозь дым/туман» + глубина |
-| **FPN** | Объекты разных размеров (drones ↔ trucks) |
-| **AdamW + Cosine** | Стабильный прогрев, плавный спад LR |
-| **EMA** | Уменьшает шум последних эпох → +mAP |
-| **AMP** | 1.7× скорость, –45 % VRAM |
+| Component                 | Why                                                           |
+|---------------------------|---------------------------------------------------------------|
+| **DETR-style Transformer**| Learns global relationships ↔ robust to occlusions             |
+| **Radar‐fusion head**     | RF channels ≈ “see through smoke/fog” + depth information       |
+| **FPN**                   | Handles objects of various sizes (drones ↔ trucks)             |
+| **AdamW + Cosine**        | Stable warmup, smooth LR decay                                 |
+| **EMA**                   | Reduces noise from recent epochs → improves mAP                |
+| **AMP**                   | 1.7× speedup, –45 % VRAM usage                                  |
 
 ---
 
 ## 🛠️ Hyper-Parameters  
 
-| Параметр             | Значение | Примечание |
-|----------------------|---------:|-----------|
-| `EPOCHS`             | 45       | Полный прого н |
-| `BATCH_SIZE`         | 8        | A100 80 GB ×2 |
-| `LR_INIT`            | 1 e-4    | Base LR |
-| `LR_MIN`             | 1 e-6    | Cosine floor |
-| `WEIGHT_DECAY`       | 5 e-4    |   |
-| `RF_CHANNELS`        | 20       | Range + Doppler |
-| `EMA_DECAY`          | 0.9997   |   |
-| `IMG_SIZE`           | 960×540  | Training resize |
-| `NUM_WORKERS`        | 8        |   |
-
+| Parameter           | Value       | Notes                    |
+|---------------------|------------:|--------------------------|
+| `EPOCHS`            | 45          | Full training run        |
+| `BATCH_SIZE`        | 8           | 2×A100 80 GB GPUs        |
+| `LR_INIT`           | 1 e−4       | Base learning rate       |
+| `LR_MIN`            | 1 e−6       | Cosine annealing floor   |
+| `WEIGHT_DECAY`      | 5 e−4       |                           |
+| `RF_CHANNELS`       | 20          | Range + Doppler channels |
+| `EMA_DECAY`         | 0.9997      |                           |
+| `IMG_SIZE`          | 960×540     | Training resize          |
+| `NUM_WORKERS`       | 8           |                           |
