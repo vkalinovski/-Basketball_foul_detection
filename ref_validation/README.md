@@ -1,27 +1,27 @@
-## 🔄 Валидация и сравнение вердиктов
+## 🔄 Validation and Verdict Comparison
 
-Ниже описан полный конвейер, который:
-1. Загружает видео  
-2. Транскрибирует речь  
-3. Спрашивает у LLM «есть ли фол?»  
-4. Параллельно аннотирует видеоряд детектором  
-5. Сравнивает оба вердикта и выводит метрики  
-
----
-
-### 1. 📥 Загрузка видео  
-- **Источник:** `data/raw/…`  
-- **Действия:**  
-  - Декодирование видеопотока во фреймы (например, `cv2.VideoCapture`)  
-  - Извлечение аудиодорожки (например, `ffmpeg` → WAV)  
+Below is the full pipeline that:
+1. Loads the video  
+2. Transcribes speech  
+3. Asks the LLM “is there a foul?”  
+4. Simultaneously annotates the video using the detector  
+5. Compares both verdicts and computes metrics  
 
 ---
 
-### 2. 🗣️ Автоматическая транскрибация  
-- **Инструмент:** Whisper / другой ASR  
-- **Шаги:**  
-  1. Передача аудиофайла в ASR-модель  
-  2. Получение текста с таймстемпами:  
+### 1. 📥 Video Loading  
+- **Source:** `data/raw/…`  
+- **Actions:**  
+  - Decode the video stream into frames (e.g., `cv2.VideoCapture`)  
+  - Extract the audio track (e.g., `ffmpeg` → WAV)  
+
+---
+
+### 2. 🗣️ Automatic Transcription  
+- **Tool:** Whisper or another ASR  
+- **Steps:**  
+  1. Pass the audio file to the ASR model  
+  2. Receive text with timestamps:  
      ```json
      [
        { "start": 0.00, "end": 2.35, "text": "Play is stopped for a foul" },
@@ -31,62 +31,66 @@
 
 ---
 
-### 3. 🤖 LLM-анализ
-- **Запрос (prompt):**
+### 3. 🤖 LLM Analysis
+- **Prompt:**
   ```text
-  На основании транскрипта и описания игры,
-  есть ли в этом отрезке фол? Ответь "foul" или "no_foul".
-{
-  "verdict": "foul",
-  "confidence": 0.92
-}
-
+  Based on the transcript and game description,
+  is there a foul in this segment? Reply "foul" or "no_foul".
+  {
+    "verdict": "foul",
+    "confidence": 0.92
+  }
+  ```
+  
 ---
 
-## 4. 🦆 Модельная аннотация видео
+---
+## 4. 🦆 Model-Based Video Annotation
 
-**Модель:** YOLOv12n / RF-DETR
+**Model:** YOLOv12n / RF-DETR
 
-**Шаги:**
-1. Обработка каждого кадра  
-2. Детекция и трекинг игроков и мяча  
-3. Применение логики определения фола (например, по пересечению зон)  
-4. Формирование итогового вердикта  
+**Steps:**
+1. Process each frame  
+2. Detect and track players and the ball  
+3. Apply foul-detection logic (e.g., based on zone overlap)  
+4. Generate the final verdict  
 
-**Формат вывода:**
+**Output Format:**
 ```json
 {
   "verdict": "foul",
   "confidence": 0.87
 }
 ```
----
-
-## 5. 📊 Сравнение вердиктов и расчёт метрик
-
-| Метрика        | Формула                                          | Описание                                          |
-| -------------- | ------------------------------------------------ | ------------------------------------------------- |
-| Accuracy       | (TP + TN) / (P + N)                              | Доля совпадающих предсказаний                     |
-| Precision      | TP / (TP + FP)                                   | Точность «foul»-предсказаний                      |
-| Recall         | TP / (TP + FN)                                   | Полнота «foul»-предсказаний                       |
-| F1-score       | 2 · (Precision · Recall) / (Precision + Recall)  | Баланс между Precision и Recall                   |
-| Agreement Rate | Совпадения verdict’ов / Общее число случаев      | Частота совпадения вердиктов LLM и модели         |
-
-**Где:**
-- **TP** — true positive (оба сказали «foul» и это правда)  
-- **TN** — true negative (оба сказали «no_foul» и это правда)  
-- **FP** — false positive (вердикт «foul» — ошибка)  
-- **FN** — false negative (пропущенный фол)  
 
 ---
 
-## Инструменты и зависимости
+## 5. 📊 Verdict Comparison and Metric Calculation
 
-- **Язык:** Python 3.x  
-- **Библиотеки:**
+| Metric         | Formula                                           | Description                                         |
+| -------------- | ------------------------------------------------- | --------------------------------------------------- |
+| Accuracy       | (TP + TN) / (P + N)                               | Proportion of matching predictions                   |
+| Precision      | TP / (TP + FP)                                    | Precision of “foul” predictions                      |
+| Recall         | TP / (TP + FN)                                    | Recall of “foul” predictions                         |
+| F1-score       | 2 · (Precision · Recall) / (Precision + Recall)   | Balance between Precision and Recall                  |
+| Agreement Rate | Matching verdicts / Total number of cases         | Frequency of matching verdicts between LLM and model |
+
+**Where:**
+- **TP** — true positive (both predicted “foul” and it is actually a foul)  
+- **TN** — true negative (both predicted “no_foul” and this is correct)  
+- **FP** — false positive (verdict “foul” is incorrect)  
+- **FN** — false negative (missed foul)  
+
+---
+
+## Tools and Dependencies
+
+- **Language:** Python 3.x  
+- **Libraries:**
   - OpenCV  
   - FFmpeg  
-  - Whisper (или альтернативный ASR)  
-  - PyTorch / TensorFlow (для детекционных моделей)  
-  - numpy, pandas и др.
+  - Whisper (or alternative ASR)  
+  - PyTorch / TensorFlow (for detection models)  
+  - numpy, pandas, etc.  
+
 
