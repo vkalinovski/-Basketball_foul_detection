@@ -65,23 +65,6 @@ Below is the full pipeline that:
 
 ---
 
-## 5. 📊 Verdict Comparison and Metric Calculation
-
-| Metric         | Formula                                           | Description                                         |
-| -------------- | ------------------------------------------------- | --------------------------------------------------- |
-| Accuracy       | (TP + TN) / (P + N)                               | Proportion of matching predictions                   |
-| Precision      | TP / (TP + FP)                                    | Precision of “foul” predictions                      |
-| Recall         | TP / (TP + FN)                                    | Recall of “foul” predictions                         |
-| F1-score       | 2 · (Precision · Recall) / (Precision + Recall)   | Balance between Precision and Recall                  |
-| Agreement Rate | Matching verdicts / Total number of cases         | Frequency of matching verdicts between LLM and model |
-
-**Where:**
-- **TP** — true positive (both predicted “foul” and it is actually a foul)  
-- **TN** — true negative (both predicted “no_foul” and this is correct)  
-- **FP** — false positive (verdict “foul” is incorrect)  
-- **FN** — false negative (missed foul)  
-
----
 
 ## Tools and Dependencies
 
