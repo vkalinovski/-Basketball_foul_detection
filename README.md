@@ -42,14 +42,16 @@ The main model is **RF-DETR**; **Faster R-CNN** and **YOLOv12** were considered 
 
 ## 📊 Datasets
 
-| Purpose                      | Format            | Size        | Link                                                                                     |
-|------------------------------|-------------------|-------------|------------------------------------------------------------------------------------------|
-| Frame Classification         | `.jpg` / `.json`  | 9,162 frames| **Kaggle:** [nba-foul-detection]                                                         |
-| Short Video Clips            | `.mp4`            | 3 h         | *in the process of publication*                                                          |
-| Unannotated Full-Game Videos | `.mkv` / `.mp4`   | 25 GB       | Google Drive (access upon request)                                                       |
- | COCO dataset                 | `.jpg` with annotations| 5700 frames| [COCO](https://github.com/vkalinovski/-Basketball_foul_detection/tree/main/dataset/main) |
+| Purpose                      | Format            | Size        | Link                                                                                            |
+|------------------------------|-------------------|-------------|-------------------------------------------------------------------------------------------------|
+| Frame Classification         | `.jpg` / `.json`  | 9,162 frames| [Kaggle](https://www.kaggle.com/datasets/vladimirkalinovski/nba-foul-detection)                 |
+| Short Video Clips            | `.mp4`            | 3 h         | *in the process of publication*                                                                 |
+| Unannotated Full-Game Videos | `.mkv` / `.mp4`   | 25 GB       | Google Drive (access upon request)                                                              |
+ | COCO dataset                 | `.jpg` with annotations| 5700 frames| [COCO](https://github.com/vkalinovski/-Basketball_foul_detection/tree/main/dataset/main)        |
 | YOLO dataset                 | `.jpg` with annotations| 5700 frames| [YOLO](https://github.com/vkalinovski/-Basketball_foul_detection/tree/main/dataset/mainYolov12) |
-[nba-foul-detection]: https://www.kaggle.com/datasets/vladimirkalinovski/nba-foul-detection
+
+
+
 
 
 ---
