@@ -22,9 +22,6 @@ The main model is **RF-DETR**; **Faster R-CNN** and **YOLOv12** were considered 
 1. [Repository Structure](#-repository-structure)
 2. [Datasets](#-datasets)
 3. [Validation Pipeline](#-validation-pipeline)
-4. [📁 Model Training](#-model-training)
-5. [📁 Model Tuning](#-model-tuning)
-6. [📁 Model Validation](#-model-validation)
 
 ---
 
@@ -66,45 +63,9 @@ The main model is **RF-DETR**; **Faster R-CNN** and **YOLOv12** were considered 
 4. **RF-DETR** → frame-by-frame detection + foul heuristics → verdict.  
 5. **Comparison** → Accuracy, Precision, Recall, F1, Agreement Rate.  
 
-<details>
-<summary>Metrics</summary>
-
-| Metric         | Formula                                        |
-|----------------|------------------------------------------------|
-| Accuracy       | (TP + TN) / (P + N)                            |
-| Precision      | TP / (TP + FP)                                 |
-| Recall         | TP / (TP + FN)                                 |
-| F1-score       | 2 · (Precision · Recall) / (Precision + Recall)|
-| Agreement Rate | (# of matching verdicts) / (# of all cases)    |
-
-**TP** – both predicted *foul* and it is actually a foul, **TN** – both predicted *no_foul*, **FP** – false positive foul, **FN** – missed foul.
-</details>
-
----
 
 
-## 📁 Model Training
 
-| Parameter      | Value                                                      |
-|----------------|------------------------------------------------------------|
-| Architecture   | **SlowFast R50** from *PyTorchVideo*                       |
-| Framework      | **PyTorch Lightning** + AMP                                |
-| Augmentations  | temporal sampling · crop · flip · jitter · Gaussian noise  |
-| Additional     | **Mixup**, label smoothing, **OneCycleLR**                 |
-| Logging        | Google Colab GPU → checkpoints + TensorBoard in Google Drive |
-
-Notebook: [`RF_DETR/rf-detr-train.ipynb`](./RF_DETR/rf-detr-train.ipynb)
-
----
-
-## 📁 Model Tuning
-
-- **Optuna** tunes learning rate, dropout, weight decay, etc.  
-- **Early Stopping** and checkpointing based on best val-accuracy.  
-- `seen_videos.txt` excludes already used clips → no data leakage.  
-- **Gradient Clipping** + partial backbone freezing for stability.
-
----
 
 
 ## 📁 Model Validation
@@ -119,13 +80,5 @@ Output saved to `ref_validation/results.csv`.
 
 ---
 
-## 🗃️ Baseline Models (Faster R-CNN & YOLOv12)
-
-| Model         | Notebook                                           | mAP@0.5 | Reason for Exclusion       |
-|---------------|----------------------------------------------------|---------|----------------------------|
-| Faster R-CNN  | [`Faster R-CNN/r_cnn.ipynb`](./Faster%20R-CNN/r_cnn.ipynb) | 0.10    | slow, overfits             |
-| YOLOv12       | [`YOLOv12/train-yolo12.ipynb`](./YOLOv12/train-yolo12.ipynb) | 0.48    | poorer contact detection   |
-
----
 
 
